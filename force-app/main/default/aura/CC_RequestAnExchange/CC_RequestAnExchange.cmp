@@ -1,0 +1,226 @@
+<!--
+ - Created by PE_LE on 09-Jun-17.
+ -->
+
+<aura:component description="CC_RequestAnExchange" controller="CC_RequestAnExchange" implements="force:lightningQuickActionWithoutHeader,force:hasRecordId,forceCommunity:availableForAllPageTypes">
+    
+    <aura:attribute name="isResult" type="boolean" default="false"/>
+
+    <aura:if isTrue="{!v.isResult}"> 
+        <aura:set attribute="else">
+            <div class="c-container">
+                <lightning:layout horizontalAlign="space">
+                    <lightning:layoutItem flexibility="auto" padding="around-small">
+                        <lightning:button variant="brand" label="{!$Label.c.CC_Request_Exchange}" onclick="{! c.openModelRequestExchange }" iconPosition="right"/>
+                    </lightning:layoutItem>
+                </lightning:layout>
+            </div>
+        </aura:set>
+    </aura:if>
+
+    <aura:attribute name="isOpen" type="boolean" default="false"/>
+    <aura:attribute name="recordId" type="Id" />
+    <aura:attribute name="validationResult" type="string" default="test"/>
+    <aura:attribute name="validationError" type="boolean" default="false"/>
+    <aura:attribute name="validationErrorMessage" type="string" default=""/>
+    <aura:attribute name="requestExchange" type="boolean" default="false"/>
+    <aura:attribute name="modalTitle" type="string" default="test"/>
+    <aura:attribute name="showTermsAndConditions" type="boolean" default="false"/>
+    <aura:attribute name="typeValue" type="String" required="false" default="Choose One"/>
+    <aura:attribute name="priorityValue" type="String" required="false" default="Choose One"/>
+    <aura:attribute name="shippingAddressValue" type="SVC_CustomerInstaller__c" required="false"/>
+    <aura:attribute name="billingAddressValue" type="SVC_CustomerInstaller__c" required="false"/>
+    <aura:attribute name="commentsValue" type="String" required="false"/>
+    <aura:attribute name="priorities" type="CC_SelectOption" required="false"/>
+    <aura:attribute name="commentTotal" type="String" required="false"/>
+    <aura:attribute name="billingAddressAccount" type="String" required="false"/>
+    <aura:attribute name="shippingAddressAccount" type="String" required="false"/>
+    <aura:attribute name="useBillingAddressAccount" type="boolean" default="false"/>
+    <aura:attribute name="useShippingAddressAccount" type="boolean" default="false"/>
+    <aura:attribute name="typeSelected" type="boolean" default="false"/>
+    <aura:attribute name="prioritySelected" type="boolean" default="false"/>
+    <aura:attribute name="shippingAddressSelected" type="Boolean" default="false"/>
+    <aura:attribute name="billingAddressSelected" type="boolean" default="false"/>
+    <aura:attribute name="termsAccepted" type="boolean" default="false"/>
+    <aura:attribute name="submitEnabled" type="boolean" default="false"/>
+    <aura:attribute name="addShipping" type="String" required="false"/>
+    <aura:attribute name="addBilling" type="String" required="false"/>
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <!-- 
+        <aura:handler name="change" value="{!v.shippingAddressSelected}" action="{!c.ShipAddressCheck}"/> -->
+
+
+    <aura:if isTrue="{!v.isOpen}">
+        <div role="dialog" tabindex="-1" aria-labelledby="header99" class="slds-modal slds-fade-in-open ">
+            <div class="slds-modal__container">
+                <div class="slds-modal__header">
+                    <aura:if isTrue="{!v.validationError}">
+                        <h2 id="header99" class="slds-text-heading--medium">{!$Label.c.CC_ValidationError}</h2>
+                        <aura:set attribute="else">
+                            <h2 id="header99" class="slds-text-heading--medium">{!v.modalTitle}</h2>
+                        </aura:set>
+                    </aura:if>
+                </div>
+                <div class="slds-modal__content slds-p-around--medium">
+                    <aura:if isTrue="{!v.validationError}">
+                            <p>{!v.validationErrorMessage}</p>
+                        <aura:set attribute="else">
+
+                            <!-- Type Dropdown Menu -->
+                            <div class="sfdc inputFieldStyle">
+                                <aura:if isTrue="{!v.typeSelected}">
+                                        <label class="slds-form-element__label" for="select-03">{!$Label.c.CC_Case_Comment_Type}</label>
+                                    <aura:set attribute="else">
+                                        <label class="slds-form-element__label required highLightRequired" for="select-03">* {!$Label.c.CC_Case_Comment_Type}</label>
+                                    </aura:set>
+                                </aura:if>
+                                <ui:inputSelect aura:id="select-03" value="{!v.typeValue}" class="slds-select" change="{!c.typeValueSelected}">
+                                    <ui:inputSelectOption text="Choose One"/>
+                                    <ui:inputSelectOption text="{!$Label.c.CC_Request_Exchange}"/>
+                                    <ui:inputSelectOption text="{!$Label.c.CC_Request_Spare_Part}"/>
+                                </ui:inputSelect>
+                            </div>
+
+                            <!-- Priority Dropdown Menu -->
+                            <div class="sfdc inputFieldStyle">
+                                <aura:if isTrue="{!v.prioritySelected}">
+                                    <label class="slds-form-element__label" for="select-03">{!$Label.c.CC_Case_Comment_Priority}</label>
+                                    <aura:set attribute="else">
+                                        <label class="slds-form-element__label required highLightRequired" for="select-03">* {!$Label.c.CC_Case_Comment_Priority}</label>
+                                    </aura:set>
+                                </aura:if>
+
+                                <ui:inputSelect aura:id="select-03" value="{!v.priorityValue}" class="slds-select" change="{!c.priorityValueSelected}">
+                                    <ui:inputSelectOption label="{!$Label.c.CC_SelfReg_Is_Installer_Default}" text="{!$Label.c.CC_None}" value="true" focus=""> </ui:inputSelectOption>
+                                    <aura:iteration items="{!v.priorities}" var="priorityRow">
+                                        <ui:inputSelectOption label="{!priorityRow.label}" text="{!priorityRow.label}" aura:id="controlPriority"> </ui:inputSelectOption>
+                                    </aura:iteration>
+                                </ui:inputSelect>
+                            </div>
+
+                            <!-- Shipping Address Text Field -->
+                            <div id="sfdc_shippingaddress_container" class="sfdc inputFieldStyle">
+                                <aura:if isTrue="{!v.shippingAddressSelected}">
+                                    <label class="slds-form-element__label" for="lookup-348">{!$Label.c.CC_Case_Comment_Shipping_Address}</label>
+                                    <aura:set attribute="else">
+                                        <label class="slds-form-element__label required highLightRequired" for="lookup-348">* {!$Label.c.CC_Case_Comment_Shipping_Address}</label>
+                                    </aura:set>
+                                </aura:if>
+                                &nbsp;
+
+                                 <div class="slds-m-around--x-small">
+                                    <c:CC_CustomLookupCustomerInstaller useCustomLookup="{!v.useShippingAddressAccount}" 
+                                                                        shippingSelected="{!v.shippingAddressSelected}" 
+                                                                        shippingValue="{!v.shippingAddressValue}"
+                                                                        shippingValueAdr="{!v.addShipping}"/> 
+
+                                </div>
+                                <!-- Shipping Address Checkbox use the same as account -->
+                                <div class="slds-form-element userInputContainer">
+                                    <label class="slds-checkbox--toggle slds-grid">
+                                        <input type="checkbox" name="checkbox" aria-describedby="toggle-desc" onclick="{!c.ShipAddressCheck}" id="confirm" change="{!c.ShipAddressCheck}"/>
+                                        <span id="toggle-desc" class="slds-checkbox--faux_container" aria-live="assertive">
+                                          <span class="slds-checkbox--faux"></span>
+                                        </span>
+                                        <span class="slds-form-element__label slds-m-bottom--none slds-m-horizontal--medium"> {!$Label.c.CC_Use_Account_Address} </span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Billing Address Text Field -->
+                            <div id="sfdc_billingaddress_container" class="sfdc inputFieldStyle">
+                                <aura:if isTrue="{!v.billingAddressSelected}">
+                                    <label class="slds-form-element__label" for="lookup-348">{!$Label.c.CC_Case_Comment_Billing_Address}</label>
+                                    <aura:set attribute="else">
+                                        <label class="slds-form-element__label required highLightRequired" for="lookup-348">* {!$Label.c.CC_Case_Comment_Billing_Address}</label>
+                                    </aura:set>
+                                </aura:if>
+                                &nbsp;
+
+                                <div class="slds-m-around--x-small">
+
+                                    <c:CC_CustomLookupCustomerInstaller useCustomLookup="{!v.useBillingAddressAccount}"
+                                                                        billingSelected="{!v.billingAddressSelected}"
+                                                                        billingValue="{!v.billingAddressValue}"
+                                                                        billingValueAdr="{!v.addBilling}"/> 
+
+                                </div>
+                                
+                                <!-- Billing Address Checkbox use the same as account -->
+                                <div class="slds-form-element userInputContainer">
+                                    <label class="slds-checkbox--toggle slds-grid">
+                                        <input type="checkbox" name="checkbox" aria-describedby="toggle-desc" onclick="{!c.BillAddressCheck}" id="confirm" change="{!c.BillAddressCheck}"/>
+                                        <span id="toggle-desc" class="slds-checkbox--faux_container" aria-live="assertive">
+                                          <span class="slds-checkbox--faux"></span>
+                                        </span>
+                                        <span class="slds-form-element__label slds-m-bottom--none slds-m-horizontal--medium"> {!$Label.c.CC_Use_Account_Address} </span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Comments Text Field -->
+                            <div class="sfdc inputFieldStyle">
+                                <label class="slds-form-element__label" for="select-03">{!$Label.c.CC_Case_Comments}</label>
+                                <ui:inputTextArea value="{!v.commentsValue}" aura:id="priority" rows="5" placeholder="{!$Label.c.CC_Case_Comments}" change="{!c.onBlur}" keyup="{!c.onKeyUp}" class="input sfdc_commentsinput sfdc"/>
+                            </div>
+
+                            <!-- Terms & Conditions Checkbox and Link -->
+                            <div class="slds-form-element userInputContainer">
+                                <label class="slds-checkbox--toggle slds-grid">
+                                    <input type="checkbox" name="checkbox" aria-describedby="toggle-desc" onclick="{!c.termsAccepted}" id="confirm"/>
+                                    <span id="toggle-desc" class="slds-checkbox--faux_container" aria-live="assertive">
+                                      <span class="slds-checkbox--faux"></span>
+                                    </span>
+                                    <span class="slds-form-element__label slds-m-bottom--none slds-m-horizontal--small"> {!$Label.c.CC_IAgree + ' '} <a href="javascript:void(0);" onclick="{!c.displayTerms}" >{!$Label.c.CC_TermsConditions}</a></span>
+                                </label>
+                            </div>
+
+                        </aura:set>
+                    </aura:if>
+                </div>
+                <div class="slds-modal__footer">
+                    <aura:if isTrue="{!v.validationError}">
+                        <button class="slds-button slds-button--brand" onclick="{!c.closeModel}">{!$Label.c.CC_Ok}</button>
+                        <aura:set attribute="else">
+                            <button class="slds-button slds-button--neutral" onclick="{!c.closeModel}" >{!$Label.c.CC_Cancel}</button>
+                            <button id="submitButton" class="slds-button slds-button--brand" onclick="{!c.submitRequest}" disabled="true">{!$Label.c.CC_Submit}</button>
+                        </aura:set>
+                    </aura:if>
+                </div>
+            </div>
+        </div>
+        <div class="slds-backdrop slds-backdrop--open"></div>
+    </aura:if>
+
+    <aura:if isTrue="{!v.showTermsAndConditions}">
+        <div role="dialog" tabindex="-1" aria-labelledby="header43" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <!-- Start Modal Header -->
+                <div class="slds-modal__header slds-text-heading--large noBorder" >
+                    <button class="slds-button slds-modal__close slds-button--icon-inverse" id="crossTC" title="Close" onclick="{!c.hideTerms}">
+                        <div class="slds-align--absolute-center">
+                            <h2 class="slds-section__title colorIcon" id="crossColor">X</h2>
+                        </div>
+                    </button>
+
+                </div>
+                <!-- End Modal Header -->
+                <!-- Start Modal Body -->
+                <div class="slds-modal__content slds-p-around--medium">
+                    <div class="slds-m-around--x-large slds-border--bottom">
+                        <div class="slds-text-title--caps">
+                            <ui:outputRichText value="Terms and Conditions" />
+                        </div>
+                    </div>
+                    <div class="slds-m-around--x-large ">
+                        <ui:outputRichText value="{!$Label.c.CC_Terms}" />
+                    </div>
+                </div>
+                <!-- End Modal Body -->
+            </div>
+        </div>
+        <div class="slds-backdrop slds-backdrop--open"></div>
+    </aura:if>
+
+</aura:component>

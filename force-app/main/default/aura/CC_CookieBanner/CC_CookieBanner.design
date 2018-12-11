@@ -1,0 +1,9 @@
+<design:component label="Cookie Banner">
+    
+    <design:attribute name="titleText" label="Title Text" default="Cookies in the Community" description="The title text" />
+    <design:attribute name="informationText" label="Information Text" default="Lorem ipsum" description="The main bulk of the text which forms the information" />
+    <design:attribute name="moreInformationText" label="Knowledge Article Link Text" default="More Information" description="More Information link text" />
+    <design:attribute name="moreInformationRecordId" label="Knowledge Article Record Id" description="The Knowledge Article Record Id" />
+    <design:attribute name="closeButtonText" label="Close Button Text" default="Got it" description="Close Button Text" /> 
+
+</design:component>

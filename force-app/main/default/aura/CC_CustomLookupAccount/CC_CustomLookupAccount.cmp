@@ -1,0 +1,60 @@
+<aura:component controller="CC_AddNewInstaller"  implements="forceCommunity:availableForAllPageTypes">
+
+
+    <aura:attribute name="selectedRecord" type="Account" default="{}" description="Use,for store SELECTED sObject Record"/>
+    <aura:attribute name="listOfSearchRecords" type="Account[]" description="Use,for store the list of search records which returns from apex class"/>
+    <aura:attribute name="SearchKeyWord" type="string"/>
+    <aura:attribute name="Message" type="String"/>
+    <aura:attribute name="objInstaller" type="SVC_CustomerInstaller__c" default="{'sobjectType':'SVC_CustomerInstaller__c'}"/>
+    <aura:attribute name="countries" type="SVC_CountryValueObject" required="false" />
+    <aura:attribute name="regions" type="SVC_RegionValueObject" required="false" />
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+
+    <div id="sfdc_country_container" class="sfdc inputFieldStyle">
+        <div class="slds-form-element">
+            <label class="slds-form-element__label highLightRequired" for="select-03">{!$Label.c.CC_SelfReg_Country}</label>
+            <div class="slds-form-element__control">
+                <div class="slds-select_container">
+                    <ui:inputSelect aura:id="select-03"
+                                    value="{!v.country}"
+                                    class="slds-select">
+                        <ui:inputSelectOption label="{!$Label.c.CC_SelfReg_Is_Installer_Default}" text="{!$Label.c.CC_None}" value="true" focus=""> </ui:inputSelectOption>
+                        <aura:iteration items="{!v.countries}" var="countryRow">
+                            <ui:inputSelectOption label="{!countryRow.label}" text="{!countryRow.value}" aura:id="controlCountry"> </ui:inputSelectOption>
+                        </aura:iteration>
+
+                    </ui:inputSelect>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <span class="error"></span>
+    <div id="sfdc_region_container" class="sfdc inputFieldStyle">
+        <div class="slds-form-element">
+            <label class="slds-form-element__label highLightRequired" for="select-04">{!$Label.c.CC_SelfReg_Region_of_Country}</label>
+            <div class="slds-form-element__control">
+                <div class="slds-select_container">
+                    <ui:inputSelect value="{!v.regionOfCountry}"
+                                     class="slds-select">
+                        <ui:inputSelectOption label="{!$Label.c.CC_SelfReg_Is_Installer_Default}" text="{!$Label.c.CC_None}" value="true" focus=""> </ui:inputSelectOption>
+                        <aura:iteration items="{!v.regions}" var="regionRow">
+                            <ui:inputSelectOption label="{!regionRow.label}" text="{!regionRow.value}" aura:id="controlRegion"> </ui:inputSelectOption>
+                        </aura:iteration>
+
+                    </ui:inputSelect>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <aura:iteration items="{!v.listOfSearchRecords}" var="singleRec">
+            <c:CC_CustomLookupResult oAccount="{!singleRec}" />
+        </aura:iteration>
+    </div>
+
+
+  
+</aura:component>

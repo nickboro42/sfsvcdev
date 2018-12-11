@@ -1,0 +1,25 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes" access="global">
+    
+    <aura:attribute name="buttonLabel" type="String" default="SUBMIT" />
+    
+
+    <div class="slds-size--1-of-1 slds-small-size--1-of-2 slds-medium-size--1-of-2 slds-large-size--1-of-1">
+        <span>
+        Couldn't find what you are looking for: &nbsp; &nbsp;
+        <button class="slds-button slds-button--brand communityBtn uiButton selfServiceContactSupport"
+                aria-live="off"
+                type="button"
+                data-aura-class="uiButton"
+                onclick="{!c.navigateToPage}">
+            CONTACT SUPPORT
+        </button>
+        </span>
+    </div>
+    <!--
+    <div class="cta-btn">
+        <button class="slds-button slds-button-x-brand uiButton forceCommunityAskCommunity" aria-live="off" type="button">
+            <span class=" label bBody truncate" dir="ltr">Ask A Question</span>
+        </button>
+	</div>-->
+    
+</aura:component>

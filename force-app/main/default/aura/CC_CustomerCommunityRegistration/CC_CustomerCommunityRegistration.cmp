@@ -1,0 +1,444 @@
+<aura:component controller="CC_RegistrationLtngController"
+                implements="forceCommunity:availableForAllPageTypes,force:appHostable" access="global" >
+    <aura:dependency resource="markup://force:navigateToSObject" type="EVENT"/>
+
+    <ltng:require styles="{!$Resource.SVC_SMA_SLDS_221 + '/assets/styles/salesforce-lightning-design-system-ltng.css'}" />
+
+    <aura:attribute name="regConfirmUrl" type="String" required="true" default="./CheckPasswordResetEmail"/>
+
+    <!-- Error Management -->
+    <aura:attribute name="showError" type="Boolean" required="true" default="true" access="private"/>
+    <aura:attribute name="errorMessage" type="String" required="false" access="private"/>
+
+    <!-- Personal Fields -->
+    <aura:attribute name="salution" type="String" required="false"/>
+    <aura:attribute name="firstName" type="String" required="false"/>
+    <aura:attribute name="lastName" type="String" required="false"/>
+    <aura:attribute name="email" type="String" required="false"/>
+    <!-- Address Fields -->
+    <aura:attribute name="street" type="String" required="false"/>
+    <aura:attribute name="city" type="String" required="false"/>
+    <aura:attribute name="regionOfCountry" type="String" required="false"/>
+    <aura:attribute name="postalCode" type="String" required="false"/>
+    <aura:attribute name="country" type="String" required="false"/>
+
+    <!-- Installer or End customer -->
+    <aura:attribute name="installerSwitch" type="String" />
+
+    <!-- Installer Fields (if Installer chosen) -->
+    <aura:attribute name="invitationNumber" type="String" />
+    <aura:attribute name="taxNumber" type="String" />
+
+    <aura:attribute name="IsInstaller" type="Boolean" default="false"/>
+    <aura:attribute name="displayButton" type="Boolean" default="false"/>
+    
+    <aura:attribute name="showSpinner" type="boolean" default="false"/>
+    <aura:attribute name="showModal" type="boolean" default="false"/>
+    <aura:attribute name="showInfoLanguage" type="boolean" default="false"/>
+    <aura:attribute name="showInfoInviteNum" type="boolean" default="false"/>
+    <aura:attribute name="showCookiesUsageBox" type="boolean" default="false"/>
+    <aura:attribute name="errorText" type="String" />
+
+    <aura:attribute name="submitButtonLabel" type="String" required="false" default="{!$Label.c.CC_SelfReg_Submit}"/>
+
+    <!-- Country and Region Picklist-->
+    <aura:attribute name="countries" type="SVC_CountryValueObject" required="false" />
+    <aura:attribute name="regions" type="SVC_RegionValueObject" required="false" />
+
+    <!--Blacklist country -->
+    <aura:attribute name="titleText" type="String" />
+    <aura:attribute name="FindOutWhyText" type="String" />
+    <aura:attribute name="FindOutWhyTextURL" type="String" />
+
+
+    <aura:attribute name="language" type="String" required="false"/>
+    <aura:attribute name="languages" type="SVC_LanguageValueObject" required="false" />
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+
+    <div class="SMA">
+
+
+        <aura:renderIf isTrue="{!v.showError}">
+            <div id="error">
+                <ui:outputRichText value="{!v.errorMessage}"/>
+            </div>
+        </aura:renderIf>
+
+        <aura:if isTrue="{!v.showSpinner}">
+            <div class="slds-spinner_container">
+                <div class="slds-spinner slds-spinner--brand slds-spinner--medium" aria-hidden="false" role="alert">
+                    <div class="slds-spinner__dot-a"></div>
+                    <div class="slds-spinner__dot-b"></div>
+                </div>
+            </div>
+        </aura:if>
+
+        <div id="sfdc_Salutation_container" class="sfdc inputFieldStyle">
+            <div class="slds-form-element">
+                <div class="slds-form-element__control">
+                    <div class="slds-select_container">
+                        <select id="select-01" class="slds-select" placeholder="Salutation" value="{!v.salution}" onchange="{!c.onBlur}">
+                            <option value="Mr" label="{!$Label.c.CC_SelfReg_Salutation_Mr}"></option>
+                            <option value="Mrs" label="{!$Label.c.CC_SelfReg_Salutation_Mrs}"></option>
+                            <option value="Miss" label="{!$Label.c.CC_SelfReg_Salutation_Miss}"></option>
+                            <option value="Ms" label="{!$Label.c.CC_SelfReg_Salutation_Ms}"></option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <span class="error"></span>
+
+        <div id="sfdc_firstname_container" class="sfdc inputFieldStyle">
+
+            <span class="required highLightRequired" >*</span>
+            <ui:inputText value="{!v.firstName}"  aura:id="firstname" placeholder="{!$Label.c.CC_SelfReg_First_Name}" change="{!c.onBlur}" keyup="{!c.onKeyUp}" class="input sfdc_usernameinput sfdc"/>
+        </div>
+        <span class="error"></span>
+
+        <!-- TODO - refactor below to have value set to -->
+
+        <div id="sfdc_lastname_container" class="sfdc inputFieldStyle">
+            <span class="required highLightRequired" >*</span>
+            <ui:inputText value="{!v.lastName}" aura:id="lastname" placeholder="{!$Label.c.CC_SelfReg_Last_Name}" change="{!c.onBlur}" keyup="{!c.onKeyUp}" class="input sfdc_usernameinput sfdc"/>
+        </div>
+        <span class="error"></span>
+
+
+        <!-- Quick fix FROM nick -->
+        <div id="sfdc_installerSwitch_container" class="sfdc inputFieldStyle">
+            
+            <div class="slds-form-element">
+                <label class="slds-form-element__label highLightRequired" for="select-02">{!$Label.c.CC_Type}</label>
+                <div class="slds-form-element__control">
+                    <div class="slds-select_container">
+                        <select id="select-02" class="slds-select" onchange="{!c.reveilInstallerSection}" val="{!v.installerSwitch}">
+                            <option label="{!$Label.c.CC_SelfReg_Is_Installer_Default}" disabled="true" selected="true" hidden="true" value="none"></option>
+                            <option label="{!$Label.c.CC_SelfReg_End_Customer}" value="EndCustomer"></option>
+                            <option label="{!$Label.c.CC_SelfReg_Uncertified_Installer}" value="Installer"></option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <span class="error"></span>
+
+
+        <aura:if isTrue="{!v.IsInstaller}">
+
+            <div id="sfdc_invitenumber_container" class="sfdc inputFieldStyle">
+                <span class="required highLightRequired" >*</span>
+                <ui:inputText value="{!v.invitationNumber}" required="true" aura:id="invitenumber" placeholder="{!$Label.c.CC_SelfReg_Invite_Number}" change="{!c.onBlur}" keyup="{!c.onKeyUp}" class="input sfdc_usernameinput sfdc"/>
+                <div id="sfdc_invitenumber_conditions">
+                    <div>
+                        <span class="slds-form-element__label slds-m-bottom--none slds-m-horizontal--small"> Wants to know aboout more &nbsp;&nbsp; <a href="" onclick="{!c.displayInfoInvNum}">More Info</a></span>
+                    </div>
+
+                    <aura:if isTrue="{!v.showInfoInviteNum}">
+                        <div role="dialog" tabindex="-1" aria-labelledby="header43" class="slds-modal slds-fade-in-open">
+                            <div class="slds-modal__container">
+                                <!-- Start Modal Header -->
+                                <div class="slds-modal__header slds-text-heading--large noBorder" >
+                                     <button class="slds-button slds-modal__close slds-button--icon-inverse" title="Close" onclick="{!c.hideInfoInvNum}">
+                                        <div class="slds-align--absolute-center">
+                                            <h2 class="slds-section__title colorIcon">X</h2>
+                                        </div>
+                                      </button>
+                                    
+                                </div>
+                                <!-- End Modal Header -->
+
+                                <!-- Start Modal Body -->
+                                <div class="slds-modal__content slds-p-around--medium">
+                                    <div class="slds-m-around--x-large slds-border--bottom">
+                                        <div class="slds-text-title--caps">
+                                            <ui:outputRichText value="Invite Number Informations" />
+                                        </div>
+                                    </div>
+                                    <div class="slds-m-around--x-large ">
+                                        <ui:outputRichText value="{!$Label.c.CC_InviteNumberCondition}" />
+                                    </div>
+                                </div>
+                                <!-- End Modal Body -->
+                            </div>
+                        </div>
+                        <div class="slds-backdrop slds-backdrop--open"></div>
+                    </aura:if>
+   
+                </div>
+
+
+
+            </div>
+            <span class="error"></span>
+
+            <div id="sfdc_texNumber_container" class="sfdc inputFieldStyle">
+                <ui:inputText value="{!v.taxNumber}" required="false" aura:id="postalCode" placeholder="{!$Label.c.CC_SelfReg_Tax_Number}" change="{!c.onBlur}" keyup="{!c.onKeyUp}" class="input sfdc_usernameinput sfdc"/>
+            </div>
+            <span class="error"></span>
+        </aura:if>
+
+
+        <div id="sfdc_email_container" class="sfdc inputFieldStyle">
+            <span class="required highLightRequired" >*</span>
+            <ui:inputText value="{!v.email}" required="true" aura:id="email" placeholder="{!$Label.c.CC_SelfReg_Email}" change="{!c.onBlur}" keyup="{!c.onKeyUp}" class="input sfdc_usernameinput sfdc"/>
+        </div>
+        <span class="error"></span>
+        
+        <div id="sfdc_language" class="sfdc inputFieldStyle">
+            
+            <div class="slds-form-element">
+                <span class="required highLightRequired" >*</span>
+                <label class="slds-form-element__label highLightRequired" for="select-06">Language</label>
+                <div class="slds-form-element__control">
+                    <div class="slds-select_container">
+                        <!--<select id="select-05" class="slds-select">
+                            <option label="English" value="English"></option>
+                            <option label="Deutsch" value="Deutsch"></option>
+                        </select>-->
+                        <ui:inputSelect aura:id="select-06"
+                                          value="{!v.language}" class="slds-select">
+
+                                        <ui:inputSelectOption label="{!$Label.c.CC_SelfReg_Is_Installer_Default}" text="{!$Label.c.CC_None}" value="true" focus="">
+
+                                        </ui:inputSelectOption>
+
+
+                            <aura:iteration items="{!v.languages}" var="labelRow">
+                                <ui:inputSelectOption label="{!labelRow.label}" text="{!labelRow.value}" aura:id="controlLanguage"> </ui:inputSelectOption>
+                            </aura:iteration>
+
+                        </ui:inputSelect>
+                    </div>
+                </div>
+            </div>
+            <div id="sfdc_language_conditions">
+                <div>
+                    <span class="slds-form-element__label slds-m-bottom--none slds-m-horizontal--small"> Don't see your Language  &nbsp;&nbsp; <a href="" onclick="{!c.displayInfoLanguage}">More Info</a></span>
+                </div>
+
+                <aura:if isTrue="{!v.showInfoLanguage}">
+                <div role="dialog" tabindex="-1" aria-labelledby="header43" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <!-- Start Modal Header -->
+                    <div class="slds-modal__header slds-text-heading--large noBorder" >
+                         <button class="slds-button slds-modal__close slds-button--icon-inverse" title="Close" onclick="{!c.hideInfoLanguage}">
+                            <div class="slds-align--absolute-center">
+                                <h2 class="slds-section__title colorIcon">X</h2>
+                            </div>
+                          </button>
+                        
+                    </div>
+                    <!-- End Modal Header -->
+
+                    <!-- Start Modal Body -->
+                    <div class="slds-modal__content slds-p-around--medium">
+                        <div class="slds-m-around--x-large slds-border--bottom">
+                            <div class="slds-text-title--caps">
+                                <ui:outputRichText value="Languages Informations" />
+                            </div>
+                        </div>
+                        <div class="slds-m-around--x-large ">
+                            <ui:outputRichText value="{!$Label.c.CC_LanguageCondition}" />
+                        </div>
+                    </div>
+                    <!-- End Modal Body -->
+                </div>
+                </div>
+                <div class="slds-backdrop slds-backdrop--open"></div>
+
+            </aura:if>
+
+            </div>
+        </div>
+        <span class="error"></span>
+
+        <div id="sfdc_street_container" class="sfdc inputFieldStyle">
+            <span class="required highLightRequired" >*</span>
+            <ui:inputText value="{!v.street}" required="true" aura:id="street" placeholder="{!$Label.c.CC_SelfReg_Street}" change="{!c.onBlur}" keyup="{!c.onKeyUp}" class="input sfdc_usernameinput sfdc"/>
+        </div>
+        <span class="error"></span>
+
+        <div id="sfdc_city_container" class="sfdc inputFieldStyle">
+            <span class="required highLightRequired" >*</span>
+            <ui:inputText value="{!v.city}" required="true" aura:id="city" placeholder="{!$Label.c.CC_SelfReg_City}" change="{!c.onBlur}" keyup="{!c.onKeyUp}" class="input sfdc_usernameinput sfdc"/>
+        </div>
+        <span class="error"></span>
+        <!--
+        <div id="sfdc_region_container" class="sfdc inputFieldStyle">
+            <span class="required highLightRequired" >*</span>
+            <ui:inputText value="{!v.regionOfCountry}" required="true" aura:id="region" placeholder="{!$Label.c.CC_SelfReg_Region_of_Country}" change="{!c.onBlur}" keyup="{!c.onKeyUp}" class="input sfdc_usernameinput sfdc"/>
+        </div>
+        -->
+        <span class="error"></span>
+
+        <div id="sfdc_postalCode_container" class="sfdc inputFieldStyle">
+            <span class="required highLightRequired" >*</span>
+            <ui:inputText value="{!v.postalCode}" required="true" aura:id="postalCode" placeholder="{!$Label.c.CC_SelfReg_Postal_Code}" change="{!c.onBlur}" keyup="{!c.onKeyUp}" class="input sfdc_usernameinput sfdc"/>
+        </div>
+        <span class="error"></span>
+
+        <div id="sfdc_country_container" class="sfdc inputFieldStyle">
+            <div class="slds-form-element">
+                <label class="slds-form-element__label highLightRequired" for="select-03">{!$Label.c.CC_SelfReg_Country}</label>
+                <div class="slds-form-element__control">
+                    <div class="slds-select_container">
+                        <ui:inputSelect aura:id="select-03"
+                                          value="{!v.country}"
+                                          change="{!c.onChangeCountryPicklist}"  class="slds-select">
+                            <ui:inputSelectOption label="{!$Label.c.CC_SelfReg_Is_Installer_Default}" text="{!$Label.c.CC_None}" value="true" focus=""> </ui:inputSelectOption>
+                            <aura:iteration items="{!v.countries}" var="countryRow">
+                                <ui:inputSelectOption label="{!countryRow.label}" text="{!countryRow.value}" aura:id="controlCountry"> </ui:inputSelectOption>
+                            </aura:iteration>
+
+                        </ui:inputSelect>
+                    </div>
+                </div>
+            </div>
+            <div id="sfdc_blacklisted_countries">
+                <div>
+                    <span class="slds-form-element__label slds-m-bottom--none slds-m-horizontal--small"> {!v.titleText}&nbsp;&nbsp; <a href="" onclick="{!c.moreInfo}">{!v.FindOutWhyText}</a></span>
+                </div>
+
+            </div>
+        </div>
+
+        <span class="error"></span>
+        <div id="sfdc_region_container" class="sfdc inputFieldStyle">
+            <div class="slds-form-element">
+                <label class="slds-form-element__label highLightRequired" for="select-04">{!$Label.c.CC_SelfReg_Region_of_Country}</label>
+                <div class="slds-form-element__control">
+                    <div class="slds-select_container">
+                        <!--
+                        <select id="select-04" class="slds-select" placeholder="Salutation" value="{!v.regionOfCountry}">
+                            <option label="{!$Label.c.CC_SelfReg_Is_Installer_Default}" value="{!$label.c.CC_None}"> </option>
+                            <aura:iteration items="{!v.regions}" var="regionRow">
+                                <option label="{!regionRow.label}" value="{!regionRow.value}"> </option>
+                            </aura:iteration>
+                        </select>
+                        -->
+
+                        <ui:inputSelect value="{!v.regionOfCountry}"
+                                        change="{!c.onBlur}"  class="slds-select">
+                            <ui:inputSelectOption label="{!$Label.c.CC_SelfReg_Is_Installer_Default}" text="{!$Label.c.CC_None}" value="true" focus=""> </ui:inputSelectOption>
+                            <aura:iteration items="{!v.regions}" var="regionRow">
+                                <ui:inputSelectOption label="{!regionRow.label}" text="{!regionRow.value}" aura:id="controlRegion"> </ui:inputSelectOption>
+                            </aura:iteration>
+
+                        </ui:inputSelect>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <span class="error"></span>
+
+        <!-- WIP START  Add additional fields here -->
+
+
+
+        <div id="sfdc_verify_container" class="sfdc inputFieldStyle">
+            <div class="slds-form-element ">
+              <label class="slds-checkbox--toggle slds-grid">
+                <input type="checkbox" name="checkbox" aria-describedby="toggle-desc" onclick="{!c.onBlur}" id="confirm"/>
+                <span id="toggle-desc" class="slds-checkbox--faux_container" aria-live="assertive">
+                  <span class="slds-checkbox--faux"></span>
+                </span>
+                <span class="slds-form-element__label slds-m-bottom--none slds-m-horizontal--small"> {!$Label.c.CC_IAgree + ' '} <a href="javascript:void(0);" onclick="{!c.displayTerms}" >{!$Label.c.CC_TermsConditions}</a></span>
+              </label>
+            </div>
+
+            <div class="highLightRequired topSpace" >{!$Label.c.CC_RequiredFields}</div>
+            <aura:if isTrue="{!v.showModal}">
+                <div role="dialog" tabindex="-1" aria-labelledby="header43" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <!-- Start Modal Header -->
+                    <div class="slds-modal__header slds-text-heading--large noBorder" >
+                         <button class="slds-button slds-modal__close slds-button--icon-inverse" title="Close" onclick="{!c.hideTerms}">
+                            <div class="slds-align--absolute-center">
+                                <h2 class="slds-section__title colorIcon">X</h2>
+                            </div>
+                          </button>
+                        
+                    </div>
+                    <!-- End Modal Header -->
+
+                    <!-- Start Modal Body -->
+                    <div class="slds-modal__content slds-p-around--medium">
+                        <div class="slds-m-around--x-large slds-border--bottom">
+                            <div class="slds-text-title--caps">
+                                <ui:outputRichText value="Terms and Conditions" />
+                            </div>
+                        </div>
+                        <div class="slds-m-around--x-large ">
+                            <ui:outputRichText value="{!$Label.c.CC_Terms}" />
+                        </div>
+                    </div>
+                    <!-- End Modal Body -->
+                </div>
+                </div>
+                <div class="slds-backdrop slds-backdrop--open"></div>
+
+            </aura:if>
+        </div>
+
+        <div id="sfdc_verify_container_cookies" class="sfdc inputFieldStyle">
+            <div class="slds-form-element ">
+                <label class="slds-checkbox--toggle slds-grid">
+                    <input type="checkbox" name="checkbox" aria-describedby="toggle-desc" onclick="{!c.onBlur}" id="confirmCookies"/>
+                    <span id="toggle-desc" class="slds-checkbox--faux_container" aria-live="assertive">
+                  <span class="slds-checkbox--faux"></span>
+                </span>
+                    <span class="slds-form-element__label slds-m-bottom--none slds-m-horizontal--small"> {!$Label.c.CC_IAgree + ' '} <a href="javascript:void(0);" onclick="{!c.displayCookiesUsage}" >{!$Label.c.CC_CookieUsageConditions}</a></span>
+                </label>
+            </div>
+
+            <div class="highLightRequired topSpace" >{!$Label.c.CC_RequiredFields}</div>
+            <aura:if isTrue="{!v.showCookiesUsageBox}">
+                <div role="dialog" tabindex="-1" aria-labelledby="header43" class="slds-modal slds-fade-in-open">
+                    <div class="slds-modal__container">
+                        <!-- Start Modal Header -->
+                        <div class="slds-modal__header slds-text-heading--large noBorder" >
+                            <button class="slds-button slds-modal__close slds-button--icon-inverse" title="Close" onclick="{!c.hideCookiesUsage}">
+                                <div class="slds-align--absolute-center">
+                                    <h2 class="slds-section__title colorIcon">X</h2>
+                                </div>
+                            </button>
+
+                        </div>
+                        <!-- End Modal Header -->
+
+                        <!-- Start Modal Body -->
+                        <div class="slds-modal__content slds-p-around--medium">
+                            <div class="slds-m-around--x-large slds-border--bottom">
+                                <div class="slds-text-title--caps">
+                                    <ui:outputRichText value="Cookie Usage Conditions" />
+                                </div>
+                            </div>
+                            <div class="slds-m-around--x-large ">
+                                <ui:outputRichText value="{!$Label.c.CC_CookiesCondition}" />
+                            </div>
+                        </div>
+                        <!-- End Modal Body -->
+                    </div>
+                </div>
+                <div class="slds-backdrop slds-backdrop--open"></div>
+
+            </aura:if>
+        </div>
+        <span class="error"></span>
+
+        <!-- WIP end -->        
+        <aura:if isTrue="{!v.errorText}">
+            <div class="errorMessage error">
+                    {!v.errorText}
+            </div>
+        </aura:if>
+
+        <div class="sfdc">
+            <ui:button aura:id="submitButton" disabled="{!v.displayButton?false:true}" label="{!$Label.c.CC_SelfReg_Submit}" press="{!c.handleSelfRegister}" class="{!(v.displayButton?'custom_button':'custom_button disabledCustomButton')}"/>
+        </div>
+
+    </div>
+
+</aura:component>

@@ -1,0 +1,37 @@
+<!-- 
+    Copyright: Salesforce 2017
+    Original Author: dharfleet
+    Date: 2017-05-18
+
+    A cookie banner component
+-->
+<aura:component implements="forceCommunity:availableForAllPageTypes,force:appHostable" 
+	access="global"
+	controller="CC_CookieBannerLtngController" >
+
+	<aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+
+    <aura:attribute name="titleText" type="String" />
+	<aura:attribute name="informationText" type="String" />
+	<aura:attribute name="moreInformationText" type="String" />
+	<aura:attribute name="moreInformationRecordId" type="String" />
+	<aura:attribute name="closeButtonText" type="String" />
+    
+	<aura:attribute name="errorText" type="String" />
+
+	
+	<div aura:id="banner"
+		class="bannerOff slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_info"
+		role="alert" style="position: fixed; bottom:0; border-bottom: none; z-index: 999;">
+		<div class="slds-grid slds-wrap slds-grid_pull-padded">
+
+			<div class="slds-col slds-p-vertical_small"><h2>{!v.titleText}</h2></div>
+
+			<div class="slds-col slds-p-vertical_small">{!v.informationText} &nbsp; <a href="" onclick="{!c.moreInfo}">{!v.moreInformationText}</a>
+			</div>
+			<div class="slds-col slds-p-vertical_small slds-size_1-of-1">
+				<lightning:button variant="brand" label="{!v.closeButtonText}" onclick="{!c.close}" />
+			</div>
+		</div>
+</div>
+</aura:component>

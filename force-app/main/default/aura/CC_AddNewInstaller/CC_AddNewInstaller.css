@@ -1,0 +1,56 @@
+.THIS.visibilityNO {
+ 	display:none;
+  
+}
+
+.THIS.visibilityNONE {
+	display:none;
+  
+}
+ 
+.THIS .slds-modal{
+	background-color: rgba(0, 0, 0, 0.4); 
+}
+ 
+ 
+ 
+.THIS .slds-modal__header{
+	padding-top: 30px;
+	padding-bottom: 0px;
+	border-bottom: none;
+}
+
+.THIS .slds-modal__container { 
+	max-width: 70rem !important;
+	width: auto;
+
+} 
+
+
+.THIS.uiButtonInstallerButton{
+    
+    text-align: center !important;
+    vertical-align: middle !important;
+    position: relative !important;
+    display: inline-block !important;
+    line-height: 1.875rem !important;
+    -webkit-appearance: none !important;
+    white-space: normal !important;
+    user-select: none !important;
+    background: border-box transparent !important;
+    text-decoration: none !important;
+    cursor: pointer !important;
+    width: 100% !important;
+    border-radius: .125rem !important;
+    padding: 14px !important;
+    background-color: #2574a9 !important;
+    border: none !important;
+    font-weight: 700 !important;
+    color: #ffffff !important;
+    font-size: .8125rem !important;
+    -webkit-transition: all .8s ease !important;
+    transition: all .8s ease !important;
+    text-transform: uppercase !important;
+    font-family: Lato !important;
+
+}

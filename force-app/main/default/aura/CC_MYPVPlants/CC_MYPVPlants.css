@@ -1,0 +1,134 @@
+/**
+ * Created by PE_LE on 19-Jun-17.
+ */
+.THIS .titleInstalledBaseSystems{
+    background-color: #004a7f !important;
+    margin-top: 20px;
+    font-weight: 500 !important;
+    color: white !important;
+}
+
+.THIS .whiteFont {
+    color: white !important;
+    font-weight: 500 !important;
+    background-color: #004a7f !important;
+}
+
+.THIS .titleInstalledBase > .slds-truncate {
+    background-color: #004a7f !important;
+}
+
+.THIS .titleInstalledBase > .slds-button__icon {
+    background-color: #004a7f !important;
+}
+
+.THIS .slds-button :hover {
+    background-color: #004a7f !important;
+}
+
+.THIS .titleInstalledBase{
+    background-color: #004a7f !important;
+    padding: 0px;
+    margin-left: 50px;
+    margin-top: 5px;
+}
+
+.THIS .menuCross {
+    color: black !important;
+}
+
+.THIS .textLocationDescription {
+    color: black !important;
+}
+
+.THIS .tableBase {
+    width: 97%;
+    background-color: white;
+    border-style: none !important;
+    margin-left: 3%;
+
+}
+
+.THIS .tableBase td{
+    width: 20%;
+    word-wrap: break-word;
+}
+
+.THIS .tableCell {
+    border-style: none !important;
+    color: black;
+    font-size: small;
+    white-space: normal;
+}
+
+
+.THIS .tableCellheader {
+    border-style: none !important;
+    font-weight: bold;
+    color: black;
+    font-size: small;
+}
+
+.THIS .noBorder {
+    border-style: none !important;
+}
+
+.THIS .noBorder :hover{
+    border-style: none !important;
+    background-color: rgb(209,220,245) !important;
+}
+
+.THIS .titleRowBase {
+    border-style: none !important;
+    background-color: rgb(209,220,245) !important;
+}
+
+.THIS .titleRowBase :hover{
+    border-style: none !important;
+    background-color: rgb(209,220,245) !important;
+}
+
+.THIS .slds-button__icon {
+    fill: white !important;
+}
+
+.THIS .tableBaseDataRow {
+    border-style: none !important;
+}
+
+.THIS .tableBaseDataRow :hover {
+    border-style: none !important;
+    background-color: rgb(209,220,245) !important;
+}
+
+
+.THIS .tableBaseNoSystem {
+        width: 96%;
+        background-color: white;
+        border-style: none !important;
+        margin-left: 3%;
+}
+
+.THIS .tableBaseNoSystem td{
+    width: 20%;
+    word-wrap: break-word;
+}
+
+
+.THIS .tableBase tr:hover > td
+{
+    background-color: rgb(209,220,245) !important;
+}
+
+.THIS .tableBaseNoSystem tr:hover > td
+{
+    background-color: rgb(209,220,245) !important;
+}
+
+.THIS .tableCell :hover {
+    background-color: rgb(209,220,245) !important;
+}
+
+.THIS .slds-is-expanded :hover {
+    background-color: white;
+}

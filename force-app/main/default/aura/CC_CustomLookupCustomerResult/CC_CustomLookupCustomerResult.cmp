@@ -1,0 +1,18 @@
+<aura:component >
+    <aura:attribute name="oCustomerInstaller" type="SVC_CustomerInstaller__c" />
+  <!--Register the component level event-->
+    <aura:registerEvent name="oSelectedCustomerInstallerEvent" type="c:CC_SelectCustomerInstallerEvent"/>
+    
+    <li role="presentation">
+        <span class="slds-lookup__item-action slds-media slds-media--center" id="lookup-option-350" role="option">
+         <div class="slds-media__body">
+          <div class="slds-input-has-icon slds-input-has-icon--right">
+            <c:svg class="slds-input__icon" xlinkHref="{!$Resource.SLDS214 + '/assets/icons/standard-sprite/svg/symbols.svg#account'}" />                   
+            <div class="slds-lookup__result-text"><a onclick="{!c.selectCustomerInstaller}">{!v.oCustomerInstaller.Customer__r.Name}</a>
+            </div>
+           
+          </div>
+        </div>  
+        </span>
+    </li>
+</aura:component>

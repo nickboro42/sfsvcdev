@@ -1,0 +1,4 @@
+<design:component >
+    <design:attribute name="Message" label="Message" description="EROOR" />
+    <design:attribute name="searchKeyword" label="searchKeyword" description="Input text" />
+</design:component>

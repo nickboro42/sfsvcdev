@@ -1,0 +1,19 @@
+/**
+    Copyright: Salesforce 2017
+    Original Author: dharfleet
+    Date: 2017-05-18
+
+    A cookie banner component
+*/
+
+.THIS {
+}
+
+.THIS.bannerOff {
+    display: none;
+}
+
+
+.THIS.underline{
+	text-decoration: underline;
+}

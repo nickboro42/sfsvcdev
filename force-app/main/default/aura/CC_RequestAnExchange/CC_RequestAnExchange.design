@@ -1,0 +1,9 @@
+<!--
+ - Created by PE_LE on 12-Jun-17.
+ -->
+
+<design:component >
+    <design:attribute name="isOpen" label="isOpen" description="To check if the modal should be open." />
+    <design:attribute name="validationResult" label="validationResult" description="The result of the validation." />
+    <design:attribute name="validationError" label="validationError" description="Boolean validation result." />
+</design:component>

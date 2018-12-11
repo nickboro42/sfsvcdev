@@ -1,0 +1,12 @@
+<aura:component implements="force:lightningQuickActionWithoutHeader,force:hasRecordId,forceCommunity:availableForAllPageTypes">
+    
+    
+    <aura:attribute name="searchKeyword" type="string"/>
+    <aura:attribute name="Message" type="boolean" default="false" description="use for display no record found message"/>
+
+
+
+    <lightning:button label="{!$Label.c.CC_New_Installer}" onclick="{!c.openmodal}"  class="uiButtonInstallerButton"/>
+
+    
+</aura:component>

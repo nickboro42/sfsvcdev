@@ -1,0 +1,7 @@
+<!--
+ - Created by PE_LE on 19-Jun-17.
+ -->
+
+<design:component >
+    <design:attribute name="accountId" label="accountId" description="account Id." />
+</design:component>

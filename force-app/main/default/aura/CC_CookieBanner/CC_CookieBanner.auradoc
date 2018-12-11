@@ -1,0 +1,13 @@
+<aura:documentation>
+	<aura:description>
+		Copyright: Salesforce 2017
+    	Original Author: dharfleet
+    	Date: 2017-05-18
+
+    	A cookie banner component.
+
+    	The component only shows for a Guest Community User. Once the user clicks on the 'close' button, the component sets a value in sessionStorage so that the banner does not re-open for that session duration even if the user navigates away from the community and returns.
+
+	</aura:description>
+
+</aura:documentation>

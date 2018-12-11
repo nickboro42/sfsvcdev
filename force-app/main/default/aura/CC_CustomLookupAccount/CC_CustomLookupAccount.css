@@ -1,0 +1,30 @@
+.THIS .leftPaddingClass {
+    padding-left: 2rem;
+}
+ 
+.THIS .pillSize{
+ width:100%;
+}
+
+.THIS .wk_warning {
+    background : #FFB75D !important;
+}
+
+.THIS .slds-modal__container { 
+	width: auto;
+    color: black;
+    font-size: large;
+    font-family: SMAFutura;
+
+} 
+
+.THIS .slds-modal__container .slds-modal__footer .slds-button {
+	font-family: SMAFutura;
+	font-size: 0.8em;
+}
+
+
+
+.THIS .preciseCondition{
+	color: rgb(202, 182, 181);
+}

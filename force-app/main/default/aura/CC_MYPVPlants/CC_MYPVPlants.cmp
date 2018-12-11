@@ -1,0 +1,216 @@
+<!--
+ - Created by PE_LE on 19-Jun-17.
+ -->
+
+<aura:component description="CC_MYPVPlants" controller="CC_MYPVPlants" implements="forceCommunity:availableForAllPageTypes,force:hasRecordId" access="global">
+
+
+    <aura:attribute name="userId" type="string" default="none"/>
+    <aura:attribute name="contactId" type="string" default="none"/>
+    <aura:attribute name="accountId" type="string" default="none"/>
+    <aura:attribute name="role" type="string" default="none"/>
+
+    <aura:attribute name="locationId" type="String"/>
+    <aura:attribute name="locationName" type="String"/>
+    <aura:attribute name="locationERPKey" type="String"/>
+    <aura:attribute name="locationAddress" type="String"/>
+    <aura:attribute name="locationStreet" type="String"/>
+    <aura:attribute name="locationHouseNo" type="String"/>
+    <aura:attribute name="locationPostalCode" type="String"/>
+    <aura:attribute name="locationCity" type="String"/>
+    <aura:attribute name="locationCountry" type="String"/>
+
+    <aura:attribute name="basedSystem" type="List" default="none"/>
+    <aura:attribute name="installedBaseLocation" type="Map"/>
+    <aura:attribute name="installedBasedSystem" type="Map"/>
+    <aura:attribute name="installedBases" type="Map"/>
+
+    <aura:attribute name="locationList" type="Map"/>
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+
+    <div data-reactroot="" class="" role="application">
+
+        <aura:iteration items="{!v.locationList}" var="location">
+
+            <h4 class="slds-text-title_caps textLocationDescription" id="treeheading"><b>{!$Label.c.CC_Installed_Base_Location}</b></h4>
+            <h3 class="slds-text-title textLocationDescription" id="treeheading">{!location.Name}</h3>
+            <h3 class="slds-text-title textLocationDescription" id="treeheading">{!location.ERPKey}</h3>
+            <h3 class="slds-text-title textLocationDescription" id="treeheading">{!location.Street} {!v.locationHouseNo}</h3>
+            <h3 class="slds-text-title textLocationDescription" id="treeheading">{!location.PostalCode} {!v.locationCity}</h3>
+            <h3 class="slds-text-title textLocationDescription" id="treeheading">{!location.Country}</h3>
+
+            <ul class="slds-tree" role="tree" aria-labelledby="treeheading" aria-activedescendant="tree0-node1">
+
+                <aura:if isTrue="{!location.showBaseSystem}">
+
+                <div class="slds-tree__item titleInstalledBaseSystems">
+                    <lightning:buttonIcon iconName="utility:chevronright" variant="bare" alternativeText="Settings" iconClass="dark" name="{!location.Name}" onclick="{!c.handleClick}"/>
+                    <button class="slds-button slds-button_icon slds-button_icon slds-m-right_x-small" aria-controls="tree0-node1" title="Toggle">
+                        <span class="slds-assistive-text">Toggle</span>
+                    </button><a id="tree0-node1__label" href="javascript:void(0);" tabindex="-1" role="presentation" class="slds-truncate" title="Tree Branch"><b class="whiteFont">{!$Label.c.CC_Installed_Base_Systems}</b></a>
+                </div>
+
+                <ul class="slds-is-collapsed" id="{!location.Name}" role="group" aria-labelledby="tree0-node1__label">
+
+                    <aura:iteration items="{!location.installedBasedSystem}" var="baseSystem">
+
+                        <li id="tree0-node1" role="treeitem" aria-level="1" aria-expanded="true">
+
+                            <aura:if isTrue="{!baseSystem.Name}">
+
+                            <div class="slds-tree__item titleInstalledBase">
+                                <lightning:buttonIcon iconName="utility:chevronright" variant="bare" alternativeText="Settings" iconClass="dark" name="{!baseSystem.RecordId}" onclick="{!c.handleClick}"/>
+                                <button class="slds-button slds-button_icon slds-button_icon slds-m-right_x-small" aria-controls="tree0-node1" title="Toggle">
+                                    <span class="slds-assistive-text">Toggle</span>
+                                </button><a id="tree0-node1__label" href="javascript:void(0);" tabindex="-1" role="presentation" class="slds-truncate" title="Tree Branch"><b class="whiteFont">{!baseSystem.Name}</b></a>
+                            </div>
+
+                            <ul class="slds-is-collapsed" id="{!baseSystem.RecordId}" role="group" aria-labelledby="tree0-node1__label">
+
+                                    <li id="tree0-node1-0" role="treeitem" aria-level="2">
+                                        <div class="slds-tree__item">
+
+                                            <table class="slds-table slds-table_bordered slds-table_cell-buffer tableBase">
+                                                <thead class="titleRowBase">
+                                                <tr class="slds-text-title_caps">
+                                                    <th scope="col">
+                                                        <div class="slds-truncate tableCellheader" title="{!$Label.c.CC_Installed_Base}">{!$Label.c.CC_Installed_Base}</div>
+                                                    </th>
+                                                    <th scope="col">
+                                                        <div class="slds-truncate tableCellheader" title="{!$Label.c.CC_Serial_Number}">{!$Label.c.CC_Serial_Number}</div>
+                                                    </th>
+                                                    <th scope="col">
+                                                        <div class="slds-truncate tableCellheader" title="{!$Label.c.CC_Product_Model}">{!$Label.c.CC_Product_Model}</div>
+                                                    </th>
+                                                    <th scope="col">
+                                                        <div class="slds-truncate tableCellheader" title="{!$Label.c.CC_Description}">{!$Label.c.CC_Description}</div>
+                                                    </th>
+                                                    <th scope="col">
+                                                        <div class="slds-truncate tableCellheader" title="{!$Label.c.CC_Warranty_End}">{!$Label.c.CC_Warranty_End}</div>
+                                                    </th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+
+                                                <aura:iteration items="{!baseSystem.installedBases}" var="installedbase">
+
+                                                <tr class="tableBaseDataRow">
+                                                    <td data-label="{!installedbase.Name}">
+                                                        <div class="slds-truncate tableCell" title="{!installedbase.Name}">{!installedbase.Name}</div>
+                                                    </td>
+                                                    <td data-label="{!installedbase.SerialNo}">
+                                                        <div class="slds-truncate tableCell" title="{!installedbase.SerialNo}">{!installedbase.SerialNo}</div>
+                                                    </td>
+                                                    <td data-label="{!installedbase.ProductName}">
+                                                        <div class="slds-truncate tableCell" title="{!installedbase.ProductName}">{!installedbase.ProductName}</div>
+                                                    </td>
+                                                    <td data-label="{!installedbase.DescriptionF}">
+                                                        <div class="slds-truncate tableCell" title="{!installedbase.DescriptionF}">{!installedbase.DescriptionF}</div>
+                                                    </td>
+                                                    <td data-label="{!installedbase.CustomerWarrantyEnd}">
+                                                        <div class="slds-truncate tableCell" title="{!installedbase.CustomerWarrantyEnd}">{!installedbase.CustomerWarrantyEnd}</div>
+                                                    </td>
+                                                </tr>
+
+                                                </aura:iteration>
+
+                                                </tbody>
+                                            </table>
+
+                                        </div>
+                                    </li>
+
+                            </ul>
+
+                            </aura:if>
+
+                        </li>
+                    </aura:iteration>
+                </ul>
+
+                </aura:if>
+
+                <aura:if isTrue="{!location.showOrphanBases}">
+
+                <div class="slds-tree__item titleInstalledBaseSystems">
+                    <lightning:buttonIcon iconName="utility:chevronright" variant="bare" alternativeText="Settings" iconClass="dark" name="{!location.RecordId}" onclick="{!c.handleClick}"/>
+                    <button class="slds-button slds-button_icon slds-button_icon slds-m-right_x-small" aria-controls="tree0-node1" title="Toggle">
+                        <span class="slds-assistive-text">Toggle</span>
+                    </button><a id="tree0-node1__label" href="javascript:void(0);" tabindex="-1" role="presentation" class="slds-truncate" title="Tree Branch"><b class="whiteFont">{!$Label.c.CC_Installed_Base_No_System}</b></a>
+                </div>
+
+                <ul class="slds-is-collapsed" id="{!location.RecordId}" role="group" aria-labelledby="tree0-node1__label">
+
+                        <li id="tree0-node1-0" role="treeitem" aria-level="2">
+
+
+                            <div class="slds-tree__item">
+                                <button class="slds-button slds-button_icon slds-button_icon slds-m-right_x-small slds-is-disabled" disabled="" title="Toggle">
+                                </button><a href="javascript:void(0);" tabindex="-1" role="presentation" class="slds-truncate" title="Tree Item"></a>
+
+                                <table class="slds-table slds-table_bordered slds-table_cell-buffer tableBaseNoSystem">
+                                    <thead class="titleRowBase">
+                                    <tr class="slds-text-title_caps">
+                                        <th scope="col">
+                                            <div class="slds-truncate tableCellheader" title="{!$Label.c.CC_Installed_Base}">{!$Label.c.CC_Installed_Base}</div>
+                                        </th>
+                                        <th scope="col">
+                                            <div class="slds-truncate tableCellheader" title="{!$Label.c.CC_Serial_Number}">{!$Label.c.CC_Serial_Number}</div>
+                                        </th>
+                                        <th scope="col">
+                                            <div class="slds-truncate tableCellheader" title="{!$Label.c.CC_Product_Model}">{!$Label.c.CC_Product_Model}</div>
+                                        </th>
+                                        <th scope="col">
+                                            <div class="slds-truncate tableCellheader" title="{!$Label.c.CC_Description}">{!$Label.c.CC_Description}</div>
+                                        </th>
+                                        <th scope="col">
+                                            <div class="slds-truncate tableCellheader" title="{!$Label.c.CC_Warranty_End}">{!$Label.c.CC_Warranty_End}</div>
+                                        </th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    <aura:iteration items="{!location.installedBases}" var="installedbase">
+
+                                        <tr class="tableBaseDataRow">
+                                            <td data-label="{!installedbase.Name}">
+                                                <div class="slds-truncate tableCell" title="{!installedbase.Name}">{!installedbase.Name}</div>
+                                            </td>
+                                            <td data-label="{!installedbase.SerialNo}">
+                                                <div class="slds-truncate tableCell" title="{!installedbase.SerialNo}">{!installedbase.SerialNo}</div>
+                                            </td>
+                                            <td data-label="{!installedbase.ProductName}">
+                                                <div class="slds-truncate tableCell" title="{!installedbase.ProductName}">{!installedbase.ProductName}</div>
+                                            </td>
+                                            <td data-label="{!installedbase.DescriptionF}">
+                                                <div class="slds-truncate tableCell" title="{!installedbase.DescriptionF}">{!installedbase.DescriptionF}</div>
+                                            </td>
+                                            <td data-label="{!installedbase.CustomerWarrantyEnd}">
+                                                <div class="slds-truncate tableCell" title="{!installedbase.CustomerWarrantyEnd}">{!installedbase.CustomerWarrantyEnd}</div>
+                                            </td>
+                                        </tr>
+
+                                    </aura:iteration>
+
+                                    </tbody>
+                                </table>
+
+                            </div>
+
+
+                        </li>
+
+                </ul>
+
+                </aura:if>
+
+            </ul>
+
+            <div><hr/></div>
+
+        </aura:iteration>
+
+    </div>
+
+</aura:component>

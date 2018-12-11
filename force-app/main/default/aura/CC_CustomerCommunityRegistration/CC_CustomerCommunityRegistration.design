@@ -1,0 +1,6 @@
+<design:component >
+	<design:attribute name="regConfirmUrl" default="./CheckPasswordResetEmail"/>
+    <design:attribute name="titleText" label="Title Text" default="Dont see your country" description="The title text" />
+    <design:attribute name="FindOutWhyText" label="Information Text" default="Find out why" description="Information Text" />
+    <design:attribute name="FindOutWhyTextURL" label="Knowledge Article URL" description="The Knowledge Article Record URL in the Community" />
+</design:component>
