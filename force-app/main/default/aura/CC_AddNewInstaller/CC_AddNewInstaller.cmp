@@ -1,7 +1,7 @@
 <aura:component implements="force:lightningQuickActionWithoutHeader,force:hasRecordId,forceCommunity:availableForAllPageTypes">
     
     
-    <aura:attribute name="searchKeyword" type="string"/>
+    <aura:attribute name="searchKeyword" type="string" default="test"/>
     <aura:attribute name="Message" type="boolean" default="false" description="use for display no record found message"/>
 
 
