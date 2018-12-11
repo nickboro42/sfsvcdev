@@ -5,7 +5,11 @@
 
 .THIS.visibilityNONE {
 	display:none;
+<<<<<<< HEAD
 	border-radius:65px;
+=======
+	border-radius:35px;
+>>>>>>> 2cf7c9dbf6a9096690cf43179a89feca2eb8b576
   
 }
  
